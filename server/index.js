@@ -30,7 +30,7 @@ mongoose
 //클라이언트에서 HTTP 요청 메소드 중 host:port 로 요청을 보내면 실행되는 라우트
 //라우터 : 네트워크 경로간 데이터를 보내기 위해 도와주는 툴
 app.get("/", (req, res) => res.send("Hello World!~~ "));
-app.get("/hello", (req, res) => res.send("프록시 연결"));
+app.get("/api/hello", (req, res) => res.send("hello world hello"));
 
 app.post("/register", (req, res) => {
   //회원 가입 할떄 필요한 정보들을  client에서 가져오면
