@@ -12,7 +12,7 @@ const userSchema = mongoose.Schema({
   email: {
     type: String,
     trim: true,
-    unique: 1,
+    unique: 1
   },
   password: {
     type: String,
@@ -41,7 +41,6 @@ userSchema.pre("save", function (next) {
   //salt : plain password를 salt라는 랜덤한 값을 추가해 암호 텍스트를 만듬
   //saltrounds : 10이면 10자리 salt 를 이용해 비밀번호를 암호화함
   //비밀번호를 변경할 때만 비밀번호를 암호화함
-  //user_id  + secreteToken = token
   if (user.isModified("password")) {
     bcrypt.genSalt(saltRounds, function (err, salt) {
       if (err) return next(err);
@@ -69,8 +68,9 @@ userSchema.methods.getToken = function (callback) {
   var user = this;
 
   //jsonwebtoken으로 token 생성하기
-  //jwt.sign(payload,)
+  //jwt.sign(payload,비밀키)
   //tohexstring : payload는 string 타입이므로 _id를 문자형으로 변환
+    //user_id  + secreteToken = token secretToken -> user._id
   var token = jwt.sign(user._id.toHexString(), "secretToken");
   user.token = token;
   user.save(function (err, user) {
@@ -84,14 +84,14 @@ userSchema.statics.findByToken = function (token, callback) {
 
   jwt.verify(token, "secretToken", function (err, decoded) {
     //유저 아이디를 이용해 유저를 찾은 후 서버에서 가져온 토큰과 db에 보관된 토큰이 일치한지 확인
-    user.findOne({ _id: decoded, token: token }, function (err, user) {
+    user.findOne({"_id": decoded, "token": token }, function (err, user) {
       if (err) return callback(err);
-      callback(null, user);
+      callback(null, user); 
     });
   });
 };
 
-const User = mongoose.model("user", userSchema);
+const User = mongoose.model("User", userSchema);
 
 module.exports = { User };
  
